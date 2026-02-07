@@ -46,16 +46,6 @@ def _write_manifest_into_zip(zf: ZipFile, base_manifest: dict) -> None:
     manifest.setdefault("package", "anki_toggl")
     # Update mod to current epoch seconds for outside-AnkiWeb installs; harmless on AnkiWeb
     manifest["mod"] = int(time.time())
-
-    # Ensure Anki will add bundled runtime libs (tzdata) to the add-on's import path.
-    # Some Anki versions expect the key `lib`, others `libs` — include both to be safe.
-    manifest.setdefault("lib", [])
-    manifest.setdefault("libs", [])
-    if "tzdata" not in manifest["lib"]:
-        manifest["lib"].append("tzdata")
-    if "tzdata" not in manifest["libs"]:
-        manifest["libs"].append("tzdata")
-
     data = json.dumps(manifest, separators=(",", ":"))
     zf.writestr("manifest.json", data.encode("utf-8"), compress_type=ZIP_DEFLATED)
 
